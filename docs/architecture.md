@@ -36,6 +36,15 @@ to a self-hosted web app (file sync, media) is unremarkable.
 Services (`templates/compose.yml`): `xray`, `caddy`, `db` (MariaDB), `redis` and the
 website's web app. All state lives in `./data/*` bind mounts.
 
+The services sit on three Docker networks, so the proxy has no route to the
+backends:
+
+| Network | Members | Notes |
+|---|---|---|
+| `edge` | xray, caddy | xray's only neighbour is caddy |
+| `web` | caddy, web app | |
+| `backend` | web app, db, redis | `internal: true`, no route to the internet |
+
 ## Templates and rendering
 
 All config is in `templates/` with `{{VARIABLE}}` placeholders; `install.sh` renders
@@ -62,6 +71,12 @@ only in a rendered file.
 7. Each client has a unique UUID and a unique `email` label, and its own entry in
    `shortIds` (hex, even length, ≤ 16 chars). `remove_user.sh` finds a client's
    short ID through `clients/<email>.config.json`.
+8. xray shares a network only with caddy. Never attach `xray` to `web` or
+   `backend`, and never drop the `networks:` lists (compose would put every
+   service back on one shared network): db and redis trust their network.
+9. The server `routing` keeps `domainStrategy: IPIfNonMatch` and the rule that
+   blocks dot-less hostnames. Without them the `geoip:private` rule is skipped
+   for any destination given as a hostname.
 
 ## Memory budget (1 GB RAM)
 
@@ -93,8 +108,16 @@ of its database.
 - **HTTP/3 is off**: xray owns 443/tcp; Caddy cannot cleanly serve QUIC on the same
   port, and a QUIC-capable site that never answers on UDP would look odd.
 - **BitTorrent is blocked** in the xray routing rules (hosting providers act on
-  abuse complaints), and so are private IP ranges (`geoip:private`), so clients
-  cannot reach the server's internal network.
+  abuse complaints).
+- **Clients cannot reach the server's internal network**, in two layers. The
+  network split leaves xray no route to db, redis or the web app. The routing
+  rules block private IP ranges (`geoip:private`); because xray's default
+  `AsIs` strategy applies IP rules only to literal IPs, `IPIfNonMatch` makes it
+  resolve hostnames first, and dot-less names (Docker service names) are blocked
+  outright. This costs one extra DNS lookup per proxied connection. A hostname
+  whose DNS answer changes between the routing check and the connection can
+  still slip past the IP rule, which is why the network split is the main
+  barrier.
 - **Port 80 must be reachable** and DNS must point at the server before the first
   start, or the first certificate cannot be issued. On HSTS-preloaded TLDs (e.g.
   `.dev`) browsers never use plain HTTP; Caddy only redirects.

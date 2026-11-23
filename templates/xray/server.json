@@ -46,7 +46,15 @@
     }
   ],
   "routing": {
+    "domainStrategy": "IPIfNonMatch",
     "rules": [
+      {
+        "type": "field",
+        "domain": [
+          "regexp:^[^.]+$"
+        ],
+        "outboundTag": "block"
+      },
       {
         "type": "field",
         "ip": [

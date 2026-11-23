@@ -1,7 +1,19 @@
+# Three networks, so the proxy has no route to the backends:
+#   edge:    xray <-> caddy
+#   web:     caddy <-> seafile
+#   backend: seafile <-> db, redis (internal: no route to the internet)
+networks:
+  edge:
+  web:
+  backend:
+    internal: true
+
 services:
   xray:
     image: ghcr.io/xtls/xray-core:latest
     restart: unless-stopped
+    networks:
+      - edge
     command: ["run", "-c", "/etc/xray/config.json"]
     ports:
       - "443:443"               # REALITY owns TCP 443
@@ -14,9 +26,12 @@ services:
   caddy:
     image: caddy:2
     restart: unless-stopped
+    networks:
+      - edge
+      - web
     ports:
       - "80:80"                 # ACME HTTP-01 + redirect to https
-    # 8443 is NOT published: only Xray reaches it, inside the Docker network
+    # 8443 is NOT published: only Xray reaches it, over the edge network
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./data/caddy/data:/data
@@ -29,6 +44,8 @@ services:
   db:
     image: mariadb:10.11
     restart: unless-stopped
+    networks:
+      - backend
     command:
       - --innodb-buffer-pool-size=32M
       - --innodb-log-buffer-size=4M
@@ -52,12 +69,17 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    networks:
+      - backend
     command: ["redis-server", "--maxmemory", "32mb", "--maxmemory-policy", "allkeys-lru", "--save", ""]
     mem_limit: 64m
 
   seafile:
     image: seafileltd/seafile-mc:13.0-latest
     restart: unless-stopped
+    networks:
+      - web
+      - backend
     volumes:
       - ./data/seafile:/shared
     environment:
