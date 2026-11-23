@@ -1,0 +1,33 @@
+{
+	email {$ACME_EMAIL}
+	https_port 8443
+	auto_https disable_redirects
+
+	servers :8443 {
+		listener_wrappers {
+			# Xray passes the real client IP via PROXY protocol (xver: 1)
+			proxy_protocol {
+				timeout 5s
+				allow 172.16.0.0/12 10.0.0.0/8 192.168.0.0/16
+			}
+			tls
+		}
+		protocols h1 h2
+	}
+}
+
+# Port 80: ACME challenges are handled automatically; everything else -> https
+http://{$SEAFILE_HOSTNAME} {
+	redir https://{$SEAFILE_HOSTNAME}{uri} permanent
+}
+
+# Real site, reached via Xray on 443 (non-REALITY traffic is forwarded here)
+{$SEAFILE_HOSTNAME} {
+	reverse_proxy seafile:80 {
+		flush_interval -1
+		transport http {
+			read_timeout 1h
+			write_timeout 1h
+		}
+	}
+}
