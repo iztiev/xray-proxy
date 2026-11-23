@@ -1,5 +1,7 @@
 # Headless client: macOS
 
+[Русский](ru/client-macos.md) | **English**
+
 Runs xray-core as a background launchd service, via Homebrew (simplest) or the
 release binary.
 

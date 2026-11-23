@@ -1,5 +1,7 @@
 # Architecture
 
+[Русский](ru/architecture.md) | **English**
+
 How the stack fits together, and the rules that keep it working. Read this before
 changing anything in `templates/`.
 

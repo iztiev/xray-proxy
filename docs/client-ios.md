@@ -1,5 +1,7 @@
 # Client: iOS / iPadOS
 
+[Русский](ru/client-ios.md) | **English**
+
 iOS has no headless option and no official xray-core app; use an App Store client
 that supports **VLESS + REALITY + XTLS-Vision** and runs as a system VPN.
 

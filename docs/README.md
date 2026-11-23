@@ -1,5 +1,7 @@
 # Client setup
 
+[Русский](ru/README.md) | **English**
+
 Server installation, adding/removing clients and QR codes: [server.md](server.md).
 
 Desktops run the official **xray-core** binary headless (not v2fly `v2ray`, which

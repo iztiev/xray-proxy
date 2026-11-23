@@ -1,5 +1,7 @@
 # Browsers
 
+[Русский](ru/client-browsers.md) | **English**
+
 Point only a browser at the local xray client instead of the whole system. Useful
 when you do not want a system proxy, or want one browser (or one profile) proxied
 and another direct.

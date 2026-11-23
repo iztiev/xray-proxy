@@ -1,5 +1,7 @@
 # Client: Android
 
+[Русский](ru/client-android.md) | **English**
+
 Android has no headless option; use a GUI app that runs xray-core as a VPN service
 (whole-device tunnel). Recommended: **v2rayNG** (open source, xray-core inside).
 Alternatives with the same import flow: Hiddify, NekoBox.

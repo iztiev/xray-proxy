@@ -1,5 +1,7 @@
 # Headless client: Linux
 
+[Русский](ru/client-linux.md) | **English**
+
 Runs xray-core as a systemd service using the official XTLS install script.
 Works on any systemd distro (Ubuntu, Debian, Fedora, Arch…).
 

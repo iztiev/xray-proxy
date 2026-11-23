@@ -1,5 +1,7 @@
 # Headless client: Windows
 
+[Русский](ru/client-windows.md) | **English**
+
 Runs `xray.exe` in the background as a scheduled task (no window, starts at boot)
 and points the Windows system proxy at it. All commands: PowerShell **as Administrator**.
 

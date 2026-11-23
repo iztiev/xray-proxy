@@ -1,5 +1,7 @@
 # Xray REALITY stack
 
+[Русский](README.ru.md) | **English**
+
 Self-hosted VLESS + XTLS-Vision + REALITY proxy on TCP 443. Connections without valid
 REALITY credentials fall through to a real HTTPS website with a Let's Encrypt
 certificate for your domain, so the server looks like an ordinary web host.
@@ -23,8 +25,7 @@ server by `install.sh` (see [templates/README.md](templates/README.md) for the v
 
 ## Quick start
 
-Ubuntu LTS server, DNS for your domain already pointing at it, ports 80 and 443 open:
-
+Ubuntu LTS server, DNS for your domain already pointing at it, ports 80 and 443 open.
 On the server (`ssh <host>`):
 
 ```bash

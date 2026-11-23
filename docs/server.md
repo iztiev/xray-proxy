@@ -1,5 +1,7 @@
 # Server setup and administration
 
+[Русский](ru/server.md) | **English**
+
 Install, verify and run the stack on an Ubuntu LTS server, and manage proxy clients.
 
 Everything runs **on the server**: log in with `ssh <host>` and work in the install
