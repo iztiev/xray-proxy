@@ -1,0 +1,12 @@
+# Rendered by install.sh from templates/ (secrets). Templates are committed.
+/.env
+/compose.yml
+/Caddyfile
+/xray/
+/clients/
+
+# Personal notes for Claude Code (domain, provider, server details)
+/CLAUDE.local.md
+
+# Runtime data (certificates, database, user files)
+/data/

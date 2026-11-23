@@ -1,0 +1,2 @@
+# Server-side files must keep LF endings; CRLF breaks .env values and shell use
+* text=auto eol=lf
